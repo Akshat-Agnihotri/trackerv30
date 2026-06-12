@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360R Tracker - Consistency Creates IITians</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div id="toast-container" class="toast-container"></div>
+
+        <header class="app-header animate-fade-in">
+            <div class="header-content">
+                <div class="logo-area">
+                    <div class="logo-glow"></div>
+                    <i class="fa-solid fa-graduation-cap logo-icon"></i>
+                    <div>
+                        <h1>360R Tracker</h1>
+                        <p class="subtitle">Consistency Creates IITians</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="auth-modal-trigger" class="btn-auth-trigger glass">
+                        <i class="fa-solid fa-cloud animate-pulse" id="cloud-icon-indicator"></i> 
+                        <span id="auth-trigger-text">Cloud Sync</span>
+                    </button>
+                    <div id="calendar-trigger" class="date-card glass" style="cursor:pointer">
+                        <i class="fa-regular fa-calendar-days text-accent"></i>
+                        <span id="current-date">Loading System Date...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <section class="workspace-column animate-slide-up">
+                <div class="card glass">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa-solid fa-list-check text-accent"></i> Today's Core Target</h2>
+                        <span class="badge">Rule-Based</span>
+                    </div>
+                    <p class="card-desc">Complete all three objectives to secure your status for the day.</p>
+                    <div id="tasks-container" class="tasks-wrapper">
+                        <label class="task-row" for="task-lectures">
+                            <input type="checkbox" id="task-lectures" class="real-checkbox">
+                            <span class="custom-checkbox"></span>
+                            <span class="task-text">Watch 3 Lectures</span>
+                        </label>
+                        <label class="task-row" for="task-questions">
+                            <input type="checkbox" id="task-questions" class="real-checkbox">
+                            <span class="custom-checkbox"></span>
+                            <span class="task-text">Solve 60 Questions</span>
+                        </label>
+                        <label class="task-row" for="task-revision">
+                            <input type="checkbox" id="task-revision" class="real-checkbox">
+                            <span class="custom-checkbox"></span>
+                            <span class="task-text">Revision Completed</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="status-card" class="card glass status-absent">
+                    <div class="status-inner">
+                        <span class="status-label">Calculated Attendance Status</span>
+                        <div id="status-display" class="status-value">Absent Today</div>
+                        <p class="status-subtext" id="status-subtext">Complete remaining core targets to flip status to Present.</p>
+                    </div>
+                </div>
+
+                <button id="finalize-btn" class="btn-premium">
+                    <span>Finalize Today</span>
+                    <i class="fa-solid fa-bolt"></i>
+                </button>
+
+                <div class="card glass quote-card">
+                    <div class="quote-glow"></div>
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+                    <p id="motivation-quote" class="quote-text">"Loading absolute focus..."</p>
+                    <span class="quote-author">— Core Engine</span>
+                </div>
+            </section>
+
+            <section class="workspace-column animate-slide-up delay-1">
+                <div class="card glass streaks-container">
+                    <div class="streak-box current-streak-glow">
+                        <div class="streak-icon-wrap bg-flame">
+                            <i class="fa-solid fa-fire text-orange"></i>
+                        </div>
+                        <div class="streak-info">
+                            <span class="streak-label">Current Streak</span>
+                            <span id="current-streak" class="streak-val">0 Days</span>
+                        </div>
+                    </div>
+                    <div class="streak-box longest-streak-glow">
+                        <div class="streak-icon-wrap bg-trophy">
+                            <i class="fa-solid fa-trophy text-gold"></i>
+                        </div>
+                        <div class="streak-info">
+                            <span class="streak-label">Longest Streak</span>
+                            <span id="longest-streak" class="streak-val">0 Days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="mini-stat-card glass border-success">
+                        <span class="stat-lbl">Present Days</span>
+                        <span id="stat-present-count" class="stat-num text-success">0</span>
+                    </div>
+                    <div class="mini-stat-card glass border-failure">
+                        <span class="stat-lbl">Absent Days</span>
+                        <span id="stat-absent-count" class="stat-num text-failure">0</span>
+                    </div>
+                </div>
+                
+                <div class="card glass analytics-charts-box">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fa-solid fa-chart-pie text-accent"></i> Analytics Distribution</h2>
+                    </div>
+                    <div class="charts-flex-wrapper">
+                        <div class="chart-container-half">
+                            <canvas id="barChartMonthly"></canvas>
+                        </div>
+                        <div class="chart-container-half">
+                            <canvas id="pieChartRatio"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="heatmap-section animate-slide-up delay-2">
+            <div class="card glass grid-full">
+                <div class="card-header flex-header-wrap">
+                    <div>
+                        <h2 class="card-title"><i class="fa-solid fa-cubes-gradient text-accent"></i> Academic Horizon Heatmap</h2>
+                        <p class="card-desc">Target Tracking Timeline: <b>June 8, 2026</b> to <b>January 1, 2027</b></p>
+                    </div>
+                    <div class="heatmap-legend">
+                        <span class="legend-item"><span class="legend-sq bg-empty"></span> No Data</span>
+                        <span class="legend-item"><span class="legend-sq bg-present"></span> Present</span>
+                        <span class="legend-item"><span class="legend-sq bg-absent"></span> Absent</span>
+                    </div>
+                </div>
+                <div class="heatmap-scroll-area">
+                    <div id="heatmap-grid" class="heatmap-grid-inner"></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <div id="auth-modal" class="custom-modal">
+        <div class="modal-panel glass animate-scale-up">
+            <div class="modal-head">
+                <h3 id="modal-auth-title"><i class="fa-solid fa-cloud-arrow-up text-accent"></i> Core Cloud Engine</h3>
+                <button id="close-auth-modal" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="auth-logged-out" class="auth-modal-content">
+                <p class="modal-desc">Connect a sync account to back up streaks and secure cross-device consistency records seamlessly.</p>
+                
+                <div class="auth-slider-wrapper">
+                    <div class="slide-controls">
+                        <input type="radio" name="slide" id="login-slide" checked>
+                        <input type="radio" name="slide" id="signup-slide">
+                        <label for="login-slide" class="slide login-label">Login</label>
+                        <label for="signup-slide" class="slide signup-label">Signup</label>
+                        <div class="slider-tab"></div>
+                    </div>
+
+                    <div class="form-container">
+                        <div class="form-inner">
+                            <form action="#" class="slide-form login" onsubmit="event.preventDefault();">
+                                <div class="auth-input-group mt-3">
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <input type="email" id="login-email" placeholder="Email Address" required class="auth-input">
+                                    </div>
+                                </div>
+                                <div class="auth-input-group mt-3">
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-lock"></i>
+                                        <input type="password" id="login-password" placeholder="Password" required class="auth-input">
+                                    </div>
+                                </div>
+                                <div class="pass-link"><a href="#">Forgot password?</a></div>
+                                <button type="submit" id="btn-submit-login" class="btn-premium auth-main-btn mt-4"><span>Sign In</span><i class="fa-solid fa-right-to-bracket"></i></button>
+                            </form>
+                            
+                            <form action="#" class="slide-form signup" onsubmit="event.preventDefault();">
+                                <div class="auth-input-group mt-3">
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <input type="email" id="signup-email" placeholder="Email Address" required class="auth-input">
+                                    </div>
+                                </div>
+                                <div class="auth-input-group mt-3">
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-lock"></i>
+                                        <input type="password" id="signup-password" placeholder="Password" required class="auth-input">
+                                    </div>
+                                </div>
+                                <div class="auth-input-group mt-3">
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-shield"></i>
+                                        <input type="password" id="signup-confirm" placeholder="Confirm password" required class="auth-input">
+                                    </div>
+                                </div>
+                                <button type="submit" id="btn-submit-signup" class="btn-premium auth-main-btn mt-4"><span>Register Account</span><i class="fa-solid fa-user-plus"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-divider"><span>or securely use</span></div>
+
+                <button id="btn-google" class="btn-google-auth">
+                    <img src="https://cdnjs.cloudflare.com/ajax/libs/gapi-signer/1.0.0/google.svg" alt="" width="18" height="18" style="margin-right:2px;">
+                    Continue with Google
+                </button>
+            </div>
+
+            <div id="auth-logged-in" class="auth-modal-content hidden">
+                <div class="cloud-status-success">
+                    <i class="fa-solid fa-circle-check text-success dynamic-pulse"></i>
+                    <h4>Cloud Link Synchronized</h4>
+                    <p id="user-display-email">user@domain.com</p>
+                </div>
+                <p class="modal-desc centered">Your academic progression metrics, calendar matrix, and ledger checklists are actively syncing securely across cloud infrastructure nodes.</p>
+                <button id="btn-logout" class="btn-premium danger-btn">
+                    <span>Logout & Disconnect</span>
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="calendar-modal" class="custom-modal">
+        <div class="modal-panel glass animate-scale-up">
+            <div class="modal-head">
+                <div class="calendar-nav-wrap">
+                    <button id="prev-month" class="cal-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h3 id="calendar-month">June 2026</h3>
+                    <button id="next-month" class="cal-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <button id="close-calendar-modal" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="calendar-weekdays">
+                <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+            </div>
+            <div id="calendar-grid-ui"></div>
+            <div id="calendar-details" class="calendar-details">
+                <div class="empty-details-notice">
+                    <i class="fa-regular fa-hand-pointer"></i>
+                    <p>Select any date to review breakdown matrix</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dev-footer">Developed with ❤️ Akshat</div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
